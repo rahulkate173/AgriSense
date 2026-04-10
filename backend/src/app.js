@@ -12,7 +12,11 @@ const app = express()
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL || 'https://agri-sense-zeta.vercel.app/'
+  ],
   credentials: true,
 }))
 app.use(express.json())
@@ -28,4 +32,4 @@ app.use('/api/rag', ragRoutes)
 app.use('/api/marketplace', marketplaceRoutes)
 app.use('/api/calculator', calculatorRoutes)
 
-export default app
+export default app
