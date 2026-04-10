@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+RAG_ENHANCEMENT_DOCS.md
+DEPLOYMENT_SETUP.sh
+ IMPLEMENTATION_SUMMARY.md
