@@ -5,6 +5,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { createRequire } from 'module';
+import { getLanguageSpecificPrompt, verifyLanguage, convertToFarmerUnits } from './ragUtils.js';
 const require = createRequire(import.meta.url);
 const _pdfParseModule = require('pdf-parse/lib/pdf-parse.js');
 const pdfParse = _pdfParseModule.default || _pdfParseModule;
@@ -148,6 +149,7 @@ export const processAndStorePDF = async (buffer, userId, sessionId) => {
 
 /**
  * Retrieves context from Pinecone, formats prompt with chat history, and calls ChatMistralAI.
+ * Enhanced to support multilingual output and farmer-friendly language.
  */
 export const generateChatResponse = async (userId, sessionId, message, previousMessages = [], language = 'en') => {
   try {
@@ -163,85 +165,95 @@ export const generateChatResponse = async (userId, sessionId, message, previousM
       textKey: 'text', // matches the metadata key used during manual upsert
     });
 
-    // 1. Retrieve the top 3 most relevant chunks based on user message
-    const retriever = vectorStore.asRetriever(3);
+    // 1. Retrieve the top 5 most relevant chunks for better context
+    const retriever = vectorStore.asRetriever(5);
     const relevantDocs = await retriever.invoke(message);
-    const contextText = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+    const contextText = relevantDocs.map((doc) => doc.pageContent).join('\n\n---\n\n');
 
     // 2. Format history into a readable string for the prompt
-    // Assuming previousMessages holds objects { role: 'user' | 'ai', content: '...' }
     const formattedHistory = previousMessages
-      .map((msg) => `${msg.role === 'user' ? 'Farmer' : 'Agri-AI'}: ${msg.content}`)
-      .join('\n');
+      .map((msg) => `${msg.role === 'user' ? '👨‍🌾 Farmer' : '🤖 Agri-AI'}: ${msg.content}`)
+      .join('\n\n');
 
-    const languageMap = {
-      en: "English",
-      hi: "Hindi",
-      mr: "Marathi"
-    };
+    // 3. Get language-specific system prompt
+    const systemPrompt = getLanguageSpecificPrompt(language);
 
-    const displayLanguage = languageMap[language] || "English";
+    // 4. Create a comprehensive prompt template
+    const promptTemplate = PromptTemplate.fromTemplate(`${systemPrompt}
 
-    // 3. Define prompt template mapping to a farmer-friendly persona
-    let strictLangCommand = "Reply ONLY in English. Do not use other languages.";
-    let structure1 = "1. What is good";
-    let structure2 = "2. What is problem";
-    let structure3 = "3. What farmer should do";
-
-    if (language === 'hi') {
-      strictLangCommand = "महत्वपूर्ण: अपना पूरा जवाब केवल हिंदी (Hindi) में दें। अंग्रेजी का प्रयोग न करें।";
-      structure1 = "1. क्या अच्छा है (What is good)";
-      structure2 = "2. क्या समस्या है (What is problem)";
-      structure3 = "3. किसान को क्या करना चाहिए (What farmer should do)";
-    } else if (language === 'mr') {
-      strictLangCommand = "महत्त्वाचे: तुमचे संपूर्ण उत्तर फक्त मराठीत (Marathi) द्या. इंग्रजी अजिबात वापरू नका.";
-      structure1 = "1. काय चांगले आहे (What is good)";
-      structure2 = "2. काय समस्या आहे (What is problem)";
-      structure3 = "3. शेतकऱ्याने काय करावे (What farmer should do)";
-    }
-
-    const promptTemplate = PromptTemplate.fromTemplate(`
-You are an AI assistant for farmers.
-
-IMPORTANT LANGUAGE RULES:
-${strictLangCommand}
-- Output MUST be strictly in ${displayLanguage}.
-- Use simple, conversational language suitable for a farmer.
-- Keep answers short and clear.
-- If the Context doesn't contain the answer, say "I couldn't find this information in the uploaded report." Do not hallucinate data.
-
-Structure your advice explicitly as:
-${structure1}
-...
-${structure2}
-...
-${structure3}
-...
-
-History:
+Previous Context (if any):
 {history}
 
-Context:
+---
+
+Soil Report Information:
 {context}
 
-Farmer: {question}
-Agri-AI:`);
+---
 
-    // 4. Initialize LLM
+Farmer's Question:
+{question}
+
+---
+
+Now provide your detailed, farmer-friendly response. Remember:
+- ONLY respond in ${language === 'en' ? 'English' : language === 'hi' ? 'Hindi' : 'Marathi'}.
+- All calculations must be done by you - no calculations for the farmer.
+- Use the structured format provided above.
+- Be helpful, clear, and encouraging.
+
+Response:`);
+
+    // 5. Initialize LLM with conservative settings for better language adherence
     const llm = new ChatMistralAI({
       apiKey: process.env.MISTRAL_API_KEY,
       model: 'mistral-large-latest',
-      temperature: 0.1, // Keep it deterministic
+      temperature: 0.1, // Low temperature for consistency
+      maxTokens: 1500,  // Limit output length
     });
 
-    // 5. Chain and Invoke
+    // 6. Chain and Invoke
     const chain = promptTemplate.pipe(llm).pipe(new StringOutputParser());
 
-    const result = await chain.invoke({
-      history: formattedHistory,
-      context: contextText,
+    let result = await chain.invoke({
+      history: formattedHistory || "No previous context",
+      context: contextText || "No document context provided",
       question: message,
     });
+
+    // 7. Verify language and convert if needed
+    const { isCorrectLanguage, detectedLanguage, devanagariPercentage } = verifyLanguage(result, language);
+    
+    console.log(`[RAG] Language check - Target: ${language}, Detected: ${detectedLanguage}, Devanagari%: ${devanagariPercentage.toFixed(2)}`);
+
+    if (!isCorrectLanguage && language !== 'en') {
+      console.warn(`[RAG] Response not in ${language}. Detected ${detectedLanguage}. Attempting to regenerate...`);
+      
+      // If language is wrong, try again with a stronger language instruction
+      const urgentPrompt = PromptTemplate.fromTemplate(`
+CRITICAL: Your ENTIRE response MUST be in ${language === 'hi' ? 'HINDI' : 'MARATHI'} only. NO ENGLISH AT ALL.
+
+${systemPrompt}
+
+Farmer's Question:
+{question}
+
+Soil Report Context:
+{context}
+
+Respond NOW in ONLY ${language === 'hi' ? 'HINDI' : 'MARATHI'}:`);
+
+      const urgentChain = urgentPrompt.pipe(llm).pipe(new StringOutputParser());
+      result = await urgentChain.invoke({
+        question: message,
+        context: contextText || "No context",
+      });
+
+      console.log(`[RAG] Regenerated response in ${language}`);
+    }
+
+    // 8. Post-process to convert technical units
+    result = convertToFarmerUnits(result, 'kg/ha', 1);
 
     return result;
   } catch (error) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Cloud, Search, MessageSquare, ArrowLeft, ShoppingBag, X, MapPin, Upload, Bell } from 'lucide-react';
+import { Cloud, Search, MessageSquare, ArrowLeft, ShoppingBag, X, MapPin, Upload, Bell, Calculator } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../Home/styles/Home.css'; // Reuse home typography if needed
 const OptionsPage = () => {
@@ -49,6 +49,13 @@ const OptionsPage = () => {
       icon: <Bell size={48} color="#e63946" />,
       link: '/notifications',
       themeClass: 'notification-card'
+    },
+    {
+      title: t('calcTitle') || 'Pesticide Calculator',
+      description: 'Accurately calculate pesticide and water requirements for your farm area.',
+      icon: <Calculator size={48} color="var(--green-primary)" />,
+      link: '/calculator',
+      themeClass: 'calculator-card'
     }
   ];
 
@@ -172,7 +179,7 @@ const OptionsPage = () => {
                   <h2 style={{ fontSize: '1.5rem', color: 'var(--olive)', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>
                     {card.title}
                   </h2>
-                  <p style={{ color: '#64748b', textAlign: 'center', lineHeight: '1.6' }}>
+                  <p style={{ color: '#64748b', textAlign: 'center', lineHeight: '1.6',fontSize:'0.8rem' }}>
                     {card.description}
                   </p>
                 </button>

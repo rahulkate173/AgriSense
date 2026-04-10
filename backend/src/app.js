@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import ragRoutes from './routes/rag.routes.js';
 import marketplaceRoutes from './routes/marketplace.routes.js';
+import calculatorRoutes from './routes/calculator.routes.js';
 
 const app = express()
 
@@ -25,5 +26,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/rag', ragRoutes)
 app.use('/api/marketplace', marketplaceRoutes)
+app.use('/api/calculator', calculatorRoutes)
 
 export default app

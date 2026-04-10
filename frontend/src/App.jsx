@@ -12,6 +12,7 @@ const ChatPage     = lazy(() => import('./features/chat/pages/ChatPage.jsx'))
 const OptionsPage  = lazy(() => import('./features/options/pages/OptionsPage.jsx'))
 const UserDashboard = lazy(() => import('./features/marketplace/pages/UserDashboard.jsx'))
 const NotificationsPage = lazy(() => import('./features/notifications/pages/NotificationsPage.jsx'))
+const PesticideCalculator = lazy(() => import('./features/calculator/pages/PesticideCalculator.jsx'))
 
 import { NotificationProvider } from './contexts/NotificationContext.jsx';
 
@@ -105,6 +106,14 @@ const App = () => {
             element={
               <Suspense fallback={<div style={{ minHeight: '100vh', background: '#f8f9fa' }} />}>
                 <NotificationsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/calculator"
+            element={
+              <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F3EDE4' }} />}>
+                <PesticideCalculator />
               </Suspense>
             }
           />
