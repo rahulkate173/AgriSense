@@ -1,0 +1,35 @@
+/* LanguageSwitcher — pill-style toggle */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(74, 124, 63, 0.08);
+  border: 1px solid rgba(74, 124, 63, 0.2);
+  border-radius: 100px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'Manrope', sans-serif;
+  color: var(--chat-primary, #4a7c3f);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.12s;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.lang-btn:hover:not(.lang-btn--active) {
+  background: rgba(74, 124, 63, 0.12);
+}
+
+.lang-btn--active {
+  background: var(--chat-primary, #4a7c3f);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(74, 124, 63, 0.35);
+}
