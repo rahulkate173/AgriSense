@@ -30,7 +30,7 @@ app.use(cors({
 }));
 
 // Handle preflight requests for all routes
-app.options('*', cors({
+app.options('/{*path}', cors({
   origin: allowedOrigins,
   credentials: true
 }));
@@ -49,7 +49,7 @@ app.use('/api/calculator', calculatorRoutes)
 
 
 // 404 handler (Express compatible)
-app.get('*', (req, res) => {
+app.get('/{*path}', (req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
