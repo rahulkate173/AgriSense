@@ -47,4 +47,10 @@ app.use('/api/rag', ragRoutes)
 app.use('/api/marketplace', marketplaceRoutes)
 app.use('/api/calculator', calculatorRoutes)
 
+
+// 404 handler (Express compatible)
+app.get('*', (req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
 export default app
