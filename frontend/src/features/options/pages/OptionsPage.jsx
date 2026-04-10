@@ -107,7 +107,8 @@ const OptionsPage = () => {
 
       const token = JSON.parse(localStorage.getItem('agrisense_user'))?.token;
       
-      const res = await fetch('http://localhost:3000/api/marketplace/list', {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://agrisense-lu27.onrender.com';
+      const res = await fetch(`${BACKEND_URL}/api/marketplace/list`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

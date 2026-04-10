@@ -68,7 +68,8 @@ const PesticideCalculator = () => {
 
     try {
       // Bonus: Try to calculate via backend endpoint first
-      const res = await fetch('http://localhost:3000/api/calculator/calculate', {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://agrisense-lu27.onrender.com';
+      const res = await fetch(`${BACKEND_URL}/api/calculator/calculate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ area, pesticideRate: rate, sprayVolume: volume, tankSize })

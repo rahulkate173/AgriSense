@@ -1,7 +1,7 @@
 // Upload Service — sends image to backend, returns prediction result
 // To swap in a real ML API later, only this file needs to change.
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://agrisense-lu27.onrender.com';
 
 /**
  * @param {File} imageFile

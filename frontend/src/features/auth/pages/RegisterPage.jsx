@@ -62,7 +62,8 @@ const RegisterPage = () => {
     setLoading(true)
     setApiError('')
     try {
-      const res = await fetch('http://localhost:3000/api/auth/register', {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://agrisense-lu27.onrender.com';
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

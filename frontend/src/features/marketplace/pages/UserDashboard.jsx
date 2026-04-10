@@ -19,7 +19,8 @@ const UserDashboard = () => {
     setLoading(true);
     try {
       const token = JSON.parse(localStorage.getItem('agrisense_user'))?.token;
-      let url = `http://localhost:3000/api/marketplace/nearby?lat=${lat}&lng=${lng}&radiusKm=${r}`;
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://agrisense-lu27.onrender.com';
+      let url = `${BACKEND_URL}/api/marketplace/nearby?lat=${lat}&lng=${lng}&radiusKm=${r}`;
       if (s) url += `&search=${encodeURIComponent(s)}`;
 
       const res = await fetch(url, {
