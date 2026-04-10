@@ -206,7 +206,7 @@ ul { list-style: none; }
   color: var(--olive);
   background: rgba(72,84,33,0.06);
 }
-.nav-cta { flex-shrink: 0; }
+.nav-cta { flex-shrink: 0; display: flex; gap: 0.5rem; align-items: center; }
 .nav-hamburger {
   display: none;
   flex-direction: column;
@@ -228,6 +228,7 @@ ul { list-style: none; }
 .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
 .nav-hamburger.open span:nth-child(2) { opacity: 0; }
 .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+.mobile-only-cta { display: none !important; }
 
 /* ═══════════════════════════════════════
    HERO
@@ -1102,6 +1103,7 @@ ul { list-style: none; }
   .nav-links--open { transform: translateX(0); }
   .nav-links li a { font-size: 1.2rem; }
   .nav-cta { display: none; }
+  .mobile-only-cta { display: flex !important; }
   .nav-hamburger { display: flex; z-index: 1000; }
   .features-grid { grid-template-columns: 1fr; }
   .feature-card--large { grid-column: span 1; grid-template-columns: 1fr; }

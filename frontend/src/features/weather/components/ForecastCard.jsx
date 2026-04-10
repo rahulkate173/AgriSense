@@ -32,7 +32,7 @@ const ForecastCard = ({ day, index }) => {
       whileHover={{
         y: -8,
         scale: 1.04,
-        boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 20px ${accentColor}33`,
+        boxShadow: `0 20px 40px rgba(0,0,0,0.1), 0 0 20px ${accentColor}33`,
       }}
       whileTap={{ scale: 0.97 }}
       style={{ '--accent': accentColor }}

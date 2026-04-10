@@ -28,23 +28,6 @@ const testimonials = [
   },
 ]
 
-const hiwSteps = [
-  {
-    num: '01',
-    titleKey: 'hiw1Title',
-    descKey: 'hiw1Desc',
-  },
-  {
-    num: '02',
-    titleKey: 'hiw2Title',
-    descKey: 'hiw2Desc',
-  },
-  {
-    num: '03',
-    titleKey: 'hiw3Title',
-    descKey: 'hiw3Desc',
-  },
-]
 
 const Impact = () => {
   const testRefs = useRef([])
@@ -63,7 +46,7 @@ const Impact = () => {
       },
       { threshold: 0.1 }
     )
-    ;[...testRefs.current, ...hiwRefs.current].forEach((el) => { if (el) observer.observe(el) })
+    ;[...testRefs.current].forEach((el) => { if (el) observer.observe(el) })
     return () => observer.disconnect()
   }, [])
 
@@ -102,30 +85,7 @@ const Impact = () => {
           ))}
         </div>
 
-        <div className="hiw-section" id="how-it-works">
-          <div className="section-header section-header--center" style={{ marginTop: '5rem' }}>
-            <span className="section-tag">{t('hiwTag')}</span>
-            <h2 className="section-title">{t('hiwTitle')}</h2>
-          </div>
-          <div className="hiw-steps">
-            {hiwSteps.map((step, i) => (
-              <div
-                className="hiw-step"
-                id={`hiw-${i + 1}`}
-                key={step.num}
-                ref={(el) => (hiwRefs.current[i] = el)}
-                style={{ transitionDelay: `${i * 0.1}s` }}
-              >
-                <div className="hiw-step-num">{step.num}</div>
-                <div className="hiw-step-connector"></div>
-                <div className="hiw-step-body">
-                  <h4>{t(step.titleKey)}</h4>
-                  <p>{t(step.descKey)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </div>
     </section>
   )

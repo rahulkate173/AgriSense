@@ -44,7 +44,7 @@ const CurrentWeather = ({ data, locationName, isOffline, fromCache }) => {
       {/* Status Badges */}
       <div className="badge-row">
         {isOffline && <span className="badge badge-offline">📴 {t('weatherOffline')}</span>}
-        {fromCache && !isOffline && <span className="badge badge-cache">⚡ {t('weatherCached')}</span>}
+        {fromCache && !isOffline && <span className="badge badge-cache"> {t('weatherCached')}</span>}
         {isNight && <span className="badge badge-night">🌙 {t('weatherNight')}</span>}
       </div>
 

@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
+import { ArrowLeft } from 'lucide-react';
 import '../styles/Disease.css';
 import { uploadAndPredict } from '../services/uploadService.js';
 import { isMobileDevice, formatFileSize } from '../utils/uploadUtils.js';
@@ -171,73 +173,58 @@ const DiseasePage = () => {
   const renderSuccessState = () => {
     if (!result) return null;
 
+    // Pick the response text matching the current UI language
+    const lang = i18n.language || 'en';
+    const langKey = lang.startsWith('hi') ? 'hindi' : lang.startsWith('mr') ? 'marathi' : 'english';
+    const responseText = result.response?.[langKey] || result.response?.english || '';
+
+    const confPct = Math.round((result.confidence || 0) * 100);
     let barClass = 'bar--high';
     let valClass = 'high';
-    if (result.confidence < 0.8) {
-      barClass = 'bar--medium';
-      valClass = 'medium';
-    } 
-    if (result.confidence < 0.6) {
-      barClass = 'bar--low';
-      valClass = 'low';
-    }
+    if (result.confidence < 0.8) { barClass = 'bar--medium'; valClass = 'medium'; }
+    if (result.confidence < 0.6) { barClass = 'bar--low';    valClass = 'low'; }
 
-    const confPct = Math.round(result.confidence * 100);
+    // Format class label nicely: "Pepper_bell__Bacterial_spot" → "Pepper Bell - Bacterial Spot"
+    const formattedLabel = (result.class_label || '')
+      .replace(/__/g, ' - ')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
     return (
       <div className="result-card">
         <div className="result-image-wrap">
           <img src={result.imageUrl || previewUrl} alt="Analyzed Crop" className="result-image" />
-          <span className={`result-image-badge badge--${result.severity || 'moderate'}`}>
-            {result.severity || t('drNotice')}
+          <span className="result-image-badge badge--moderate">
+            {confPct}% {t('drAIConfidence')}
           </span>
         </div>
-        
+
         <div className="result-body">
           <div className="result-stage-row">
-            <h2 className="result-stage">{result.stage}</h2>
+            <h2 className="result-stage">{formattedLabel}</h2>
             <div className="result-confidence-pill">
               <span className="confidence-label">{t('drAIConfidence')}</span>
               <span className={`confidence-value ${valClass}`}>{confPct}%</span>
             </div>
           </div>
-          
+
           <div className="confidence-bar-outer">
             <div className={`confidence-bar-inner ${barClass}`} style={{ width: `${confPct}%` }}></div>
           </div>
 
           <div className="result-summary">
-            {result.summary}
+            {responseText}
           </div>
-
-          {result.recommendations && result.recommendations.length > 0 && (
-            <div style={{ marginBottom: '1rem' }}>
-              <h4 className="result-recs-title">{t('drRecActions')}</h4>
-              <ul className="result-recs-list">
-                {result.recommendations.map((rec, i) => (
-                  <li key={i} className="result-rec-item">
-                    <span className="rec-icon">✓</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
           <div className="result-disclaimer">
             <span style={{ fontSize: '1.2rem' }}>ℹ️</span>
-            <div>
-              {t('drDisclaimer')}
-            </div>
+            <div>{t('drDisclaimer')}</div>
           </div>
         </div>
 
         <div className="result-actions">
           <button className="result-action-btn btn-analyse-again" onClick={clearSelection}>
             {t('drAnotherPlant')}
-          </button>
-          <button className="result-action-btn btn-share">
-            {t('drShareBtn')}
           </button>
         </div>
       </div>
@@ -259,9 +246,12 @@ const DiseasePage = () => {
     <div className="disease-page">
       {/* Top Bar */}
       <header className="disease-topbar">
-        <div className="disease-topbar-inner" style={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/" className="disease-back-btn">
-            ← {t('backToHome')}
+        <div className="disease-topbar-inner" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <Link 
+            to="/options" 
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', textDecoration: 'none', fontWeight: 'bold', background: 'rgba(0,0,0,0.3)', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.9rem' }}
+          >
+            <ArrowLeft size={18} /> {t('backToHome')}
           </Link>
           <span className="disease-topbar-title">{t('drTitle')}</span>
           <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', gap: '0.8rem' }}>

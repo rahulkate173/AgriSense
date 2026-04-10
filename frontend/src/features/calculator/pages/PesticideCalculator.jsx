@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calculator, Droplets, FlaskConical, Languages } from 'lucide-react';
@@ -17,6 +17,13 @@ const PesticideCalculator = () => {
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
   const [isCalculating, setIsCalculating] = useState(false);
+  const resultsRef = useRef(null);
+
+  useEffect(() => {
+    if (results && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [results]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -204,6 +211,7 @@ const PesticideCalculator = () => {
 
         {results && (
           <motion.div 
+            ref={resultsRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}

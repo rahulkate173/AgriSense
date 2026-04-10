@@ -63,13 +63,18 @@ const ChatUploadPage = () => {
 
   return (
     <div className="chat-upload-page" style={{ position: 'relative' }}>
+      {/* Standardized Back Button */}
+      <Link 
+        to="/options" 
+        style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', textDecoration: 'none', fontWeight: 'bold', background: 'rgba(0,0,0,0.3)', padding: '0.5rem 1rem', borderRadius: '20px' }}
+      >
+        <ArrowLeft size={18} /> {t('backToHome')}
+      </Link>
+
       <div style={{ position: 'absolute', top: '1rem', right: '1.5rem' }}>
         <LanguageSwitcher />
       </div>
       <div className="chat-upload-card">
-        <Link to="/" style={{ color: 'var(--chat-text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', textDecoration: 'none', fontWeight: 'bold' }}>
-          <ArrowLeft size={18} /> {t('backToHome')}
-        </Link>
         <div className="chat-upload-icon">
           <FileText size={32} />
         </div>

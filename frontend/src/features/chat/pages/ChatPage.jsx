@@ -58,13 +58,18 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="chat-page">
+    <div className="chat-page" style={{ position: 'relative' }}>
+      {/* Standardized Back Button */}
+      <Link 
+        to="/options" 
+        style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff', textDecoration: 'none', fontWeight: 'bold', background: 'rgba(0,0,0,0.3)', padding: '0.5rem 1rem', borderRadius: '20px' }}
+      >
+        <ArrowLeft size={18} /> {t('backToHome')}
+      </Link>
+
       {/* Header */}
-      <header className="chat-header">
+      <header className="chat-header" style={{ paddingLeft: '8rem' }}>
         <div className="chat-header-title">
-          <Link to="/upload_report" className="chat-back-link">
-            <ArrowLeft size={18} />
-          </Link>
           <div>
             <h2 className="chat-header-name">{t('assistantName')}</h2>
             <span className="chat-header-status">

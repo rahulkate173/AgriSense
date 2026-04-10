@@ -2,11 +2,9 @@ import '../styles/Home.css'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import Problems from '../components/Problems'
-import Solution from '../components/Solution'
 import Features from '../components/Features'
-import Technology from '../components/Technology'
+import Solution from '../components/Solution'
 import Impact from '../components/Impact'
-import CTASection from '../components/CTASection'
 import Footer from '../components/Footer'
 
 const Home = () => {
@@ -18,9 +16,7 @@ const Home = () => {
         <Problems />
         <Solution />
         <Features />
-        <Technology />
         <Impact />
-        <CTASection />
       </main>
       <Footer />
     </>

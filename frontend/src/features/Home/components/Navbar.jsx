@@ -69,9 +69,23 @@ const Navbar = () => {
               <a href={href} onClick={(e) => handleNavClick(e, href)}>{label}</a>
             </li>
           ))}
+          <li className="mobile-only-cta" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
+            <LanguageSwitcher />
+            {storedUser ? (
+              <>
+                <Link to="/options" onClick={toggleMenu} style={{ fontWeight: 'bold', color: 'var(--olive)' }}>{t('navDashboard')}</Link>
+                <button onClick={handleLogout} className="btn btn-ghost">{t('navSignOut')}</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={toggleMenu} className="btn btn-ghost">{t('navSignIn')}</Link>
+                <Link to="/register" onClick={toggleMenu} className="btn btn-primary">{t('navGetStarted')}</Link>
+              </>
+            )}
+          </li>
         </ul>
 
-        <div className="nav-cta" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="nav-cta">
           <LanguageSwitcher />
           {storedUser ? (
             <>

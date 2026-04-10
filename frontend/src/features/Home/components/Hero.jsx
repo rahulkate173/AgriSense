@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
   const { t, i18n } = useTranslation()
@@ -16,12 +17,6 @@ const Hero = () => {
     document.addEventListener('mousemove', handleMouseMove)
     return () => document.removeEventListener('mousemove', handleMouseMove)
   }, [])
-
-  const handleScroll = (e, href) => {
-    e.preventDefault()
-    const target = document.querySelector(href)
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
 
   return (
     <section className="hero" id="hero">
@@ -48,12 +43,9 @@ const Hero = () => {
           {t('heroSub')}
         </p>
         <div className="hero-actions">
-          <a href="#problem" className="btn btn-primary btn-lg" id="hero-learn-more" onClick={(e) => handleScroll(e, '#problem')}>
-            {t('heroExploreProblem')}
-          </a>
-          <a href="#solution" className="btn btn-ghost btn-lg" id="hero-solution-link" onClick={(e) => handleScroll(e, '#solution')}>
-            {t('heroSeeSolution')}
-          </a>
+          <Link to="/register" className="btn btn-primary btn-lg">
+            {t('navGetStarted')}
+          </Link>
         </div>
         <div className="hero-stats">
           <div className="stat-item">
